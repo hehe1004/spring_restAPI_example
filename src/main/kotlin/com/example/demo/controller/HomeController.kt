@@ -2,13 +2,14 @@ package com.example.demo.controller
 
 import com.example.demo.entity.Todo
 import com.example.demo.repository.TodoRepository
+import com.example.demo.service.TodoService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @RequestMapping("/todos")
-class HomeController(val todoRepository: TodoRepository) {
+class HomeController(val todoService: TodoService) {
 
 //
 //    @RequestMapping("/")
@@ -17,11 +18,11 @@ class HomeController(val todoRepository: TodoRepository) {
 //    }
 
     @GetMapping
-    fun getTodos() = todoRepository.findAll()
+    fun getTodos() = todoService.getTodos()
 
-    @RequestMapping(path = ["/{todoId}"], method = [RequestMethod.GET])
-    fun getTodo(@PathVariable("todoId") todoId: Long): Optional<Todo>? {
-        return todoRepository.findById(todoId)
+    @GetMapping(("/{todoId}"))
+    fun getTodo(@PathVariable("todoId"){
+        return todoService.getTodo(todoId)
     }
 
     @PostMapping
@@ -29,6 +30,8 @@ class HomeController(val todoRepository: TodoRepository) {
         todoRepository.save(todo)
         return todo
     }
+
+
     @RequestMapping(path = ["/{todoId}"], method = [RequestMethod.PUT])
     @ResponseStatus(HttpStatus.OK)
     fun updateTodo(@RequestBody todo: Todo, @PathVariable("todoId") todoId: Long) {
@@ -38,8 +41,9 @@ class HomeController(val todoRepository: TodoRepository) {
         target.finished = todo.finished
         todoRepository.save(target)
     }
+
     @RequestMapping(path = ["/{todoId}"], method = [RequestMethod.DELETE])
-    fun deleteTodo(@PathVariable("todoId") todoId: Long){
+    fun deleteTodo(@PathVariable("todoId") todoId: Long) {
         todoRepository.deleteById(todoId)
     }
 }
